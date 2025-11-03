@@ -1645,7 +1645,9 @@ if __name__ == "__main__":
     import uvicorn
     
     # Get configuration from environment
-    port = int(os.getenv("PORT", 8000))
+    # Default to 10000 for Render, 8000 for local development
+    default_port = 10000 if os.getenv("RENDER") else 8000
+    port = int(os.getenv("PORT", default_port))
     host = os.getenv("HOST", "0.0.0.0")
     workers = int(os.getenv("WORKERS", 1))
     environment = os.getenv("ENVIRONMENT", "development")
