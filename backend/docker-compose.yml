@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  foodlang-ai-backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: foodlang-ai-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-key-for-local-development-only}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - RATE_LIMIT_REQUESTS=${RATE_LIMIT_REQUESTS:-1000}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-3600}
+      - ADMIN_RATE_LIMIT_REQUESTS=${ADMIN_RATE_LIMIT_REQUESTS:-500}
+      - NODE_ENV=${NODE_ENV:-development}
+    volumes:
+      - ./data:/app/data
+      - ./ProductList.xlsx:/app/ProductList.xlsx:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - foodlang-network
+
+networks:
+  foodlang-network:
+    driver: bridge

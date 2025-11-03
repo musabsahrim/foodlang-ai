@@ -1,0 +1,6 @@
+# This directory will contain:
+# - glossary.pkl (processed glossary data)
+# - faiss_index.bin (FAISS vector index)
+# - metadata.json (glossary metadata)
+# - update_history.json (glossary update history)
+# - cost_log.json (API usage cost logs)
