@@ -1645,12 +1645,18 @@ if __name__ == "__main__":
     import uvicorn
     
     # Get configuration from environment
-    # Default to 10000 for Render, 8000 for local development
-    default_port = 10000 if os.getenv("RENDER") else 8000
-    port = int(os.getenv("PORT", default_port))
+    # Force port 10000 for production/Render deployment
+    port = int(os.getenv("PORT", 10000))
+    if os.getenv("ENVIRONMENT") == "production":
+        port = 10000  # Force port 10000 for production
     host = os.getenv("HOST", "0.0.0.0")
     workers = int(os.getenv("WORKERS", 1))
     environment = os.getenv("ENVIRONMENT", "development")
+    
+    # Debug logging
+    logger.info(f"🚀 Starting server on {host}:{port} (environment: {environment})")
+    logger.info(f"PORT env var: {os.getenv('PORT', 'not set')}")
+    logger.info(f"ENVIRONMENT env var: {os.getenv('ENVIRONMENT', 'not set')}")
     
     # Production configuration
     if environment == "production":
